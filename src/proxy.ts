@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { decrypt } from '@/lib/auth/session';
 
-const publicRoutes = ['/login', '/signup'];
+const publicRoutes = ['/', '/login', '/signup'];
 
 export default async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -21,7 +21,7 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
 
-  if (isPublicRoute && session?.userId) {
+  if (isPublicRoute && session?.userId && path !== '/') {
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
   }
 

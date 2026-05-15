@@ -154,6 +154,22 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 8s ease infinite;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

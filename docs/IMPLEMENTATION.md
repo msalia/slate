@@ -315,12 +315,14 @@ The core feature. Build incrementally — get the grid rendering first, then add
 
 ### 10.1 — Landing Page (`/`)
 
-- [ ] Hero section: headline, one-line subheadline, "Get Started" CTA
-- [ ] Feature section: 2-3 cards highlighting key features (visual schedule builder, share with attendees, export to calendar)
-- [ ] Optional: screenshot or mockup of the calendar editor
-- [ ] Footer: minimal — link to sign up, maybe a GitHub link
-- [ ] Fully responsive
-- [ ] If user is already logged in, redirect to `/dashboard`
+- [x] Hero section: headline ("Event schedules, built visually."), subheadline, "Get Started Free" + "Read the Docs" CTAs
+- [x] Feature section: 6 cards with icons (Visual Schedule Builder, Category Color-Coding, Presenter Management, Shareable Attendee View, Calendar Export, Draft & Publish)
+- [ ] Optional: screenshot or mockup of the calendar editor — deferred until Phase 7 is built
+- [x] Footer: minimal — Documentation, Sign in, Sign up links
+- [x] Header: logo + Sign in / Get Started buttons
+- [x] Fully responsive (flexbox/grid, stacks on mobile)
+- [x] If user is already logged in, redirect to `/dashboard`
+- [x] Proxy updated to allow `/` as public route
 
 ---
 
