@@ -11,27 +11,32 @@
 ## Getting Started
 
 1. Clone the repo:
+
    ```bash
    git clone git@github.com:msalia/slate.git
    cd slate
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Run tests:
+
    ```bash
    npm test
    ```
 
 4. Start with Docker Compose (recommended):
+
    ```bash
    docker compose up --build
    ```
 
 5. Or hybrid mode (faster iteration):
+
    ```bash
    # Terminal 1 — Database
    docker compose up db
@@ -76,9 +81,9 @@ slate/
 
 ## Database Commands
 
-| Command | Purpose |
-|---------|---------|
-| `npm run db:push` | Sync schema to DB (dev, no migration files) |
-| `npm run db:generate` | Generate SQL migration from schema changes |
-| `npm run db:migrate` | Run pending migrations |
-| `npm run db:studio` | Open visual database editor |
+| Command               | Purpose                                     |
+| --------------------- | ------------------------------------------- |
+| `npm run db:push`     | Sync schema to DB (dev, no migration files) |
+| `npm run db:generate` | Generate SQL migration from schema changes  |
+| `npm run db:migrate`  | Run pending migrations                      |
+| `npm run db:studio`   | Open visual database editor                 |

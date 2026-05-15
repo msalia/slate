@@ -17,9 +17,9 @@
 ## Dokploy Deployment
 
 - **Dashboard:** https://dok.msalia.org
-- **Project ID:** tJmS23ytNIY1Yzk9s_et6
-- **Compose ID:** 5utsNRih-NPNirpVlqiT_
-- **Environment ID:** fzqAEjuNMFPtvjLsPyyUK
+- **Project ID:** fzRdJI_bEO1kJS3jDmeVG
+- **Compose ID:** X5KciBQAlmF6xmr79SKeK
+- **Environment ID:** HMNOmVsX9cBnsbWL27R_s
 - **Build Type:** docker-compose
 - **Source:** git (https://github.com/msalia/slate.git)
 - **Auto Deploy:** on push to main

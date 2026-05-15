@@ -16,6 +16,7 @@ Event schedule management tool for organizers of single or multi-day events.
 ## Data Model
 
 ### Event
+
 - Name (required)
 - Date range — start date / end date (single day = same date for both)
 - Timezone
@@ -24,6 +25,7 @@ Event schedule management tool for organizers of single or multi-day events.
 - Shareable slug (e.g., `/e/techconf-2026`)
 
 ### Session
+
 - Title (required)
 - Start time / end time (minute-level precision)
 - Track / location (determines calendar column)
@@ -32,6 +34,7 @@ Event schedule management tool for organizers of single or multi-day events.
 - Presenter(s) (many-to-many)
 
 ### Presenter
+
 - Name (required)
 - Role / title
 - Photo
@@ -40,12 +43,14 @@ Event schedule management tool for organizers of single or multi-day events.
 - Multiple presenters per session (displayed as avatar face pile)
 
 ### Session Category
+
 - Name
 - Color
 - Custom per event, reusable across organizer's events
 - Drives color-coding on session cards
 
 ### Break
+
 - Special session type with distinct visual treatment (hatched/striped pattern)
 
 ---
@@ -62,6 +67,7 @@ Event schedule management tool for organizers of single or multi-day events.
 ## Event Creation
 
 Minimal form to get into the editor fast:
+
 - Event name
 - Date range (start / end date)
 - Timezone
@@ -73,34 +79,40 @@ Description, tracks, and categories are added later from event settings.
 ## Calendar Editor (Core Feature — Custom Built)
 
 ### Layout
+
 - Vertical time axis (top to bottom)
 - Tracks as columns
 - 1-3 day columns visible at once, horizontal scroll for longer events
 - Day tabs / date headers at the top of each column
 
 ### Grid
+
 - 30-minute grid lines (minimal, not cluttered)
 - 5-minute snap intervals for drag-and-drop
 - Minute-level precision on manual time input
 - Current time indicator: horizontal line across all columns
 
 ### Interactions
+
 - Drag-and-drop to create and move sessions
 - Click time slot to add a session
 - Click session to edit (opens side panel or modal)
 - Smooth, delightful, snappy, and performant
 
 ### Session Cards
+
 - White/light background
 - Full colored border (all sides) driven by session category
 - Rounded corners, subtle shadow
 - Content: bold title, time range, description snippet, presenter avatar stack (face pile)
 
 ### Break Blocks
+
 - Hatched/striped pattern
 - Visually distinct from regular sessions
 
 ### Track Management
+
 - Tracks addable on the fly via "+" button to add a column
 - Tracks represent locations or parallel streams
 
@@ -109,6 +121,7 @@ Description, tracks, and categories are added later from event settings.
 ## Design System
 
 ### Overall Feel
+
 - Minimal, modern, not cluttered
 - Light, airy — lots of whitespace, soft background
 - Rounded UI elements throughout — buttons, badges, inputs
@@ -116,15 +129,18 @@ Description, tracks, and categories are added later from event settings.
 - Smooth/delightful interactions, snappy and performant
 
 ### Navigation
+
 - Clean sidebar navigation with icons
 - Pill-shaped tabs/toggles for in-page navigation
 
 ### Content Patterns
+
 - Card-based rows with subtle borders and inline actions
 - Drag handles (grid dots) where reordering is supported
 - Side panel (right side) for preview/details without leaving the main view
 
 ### Inspiration
+
 - Admin dashboard UI with pill tabs and card rows (Image 1)
 - Color-coded calendar blocks with category-driven fills, break hatching, "now" line (Image 2)
 - Multi-day card grid with colored borders, rich content, face piles (Image 3)
@@ -145,6 +161,7 @@ Description, tracks, and categories are added later from event settings.
 ## Export
 
 Organizer only:
+
 - **Full schedule `.ics`** — all sessions in one iCalendar file
 - **Per-session `.ics`** — "Add to Calendar" button on individual sessions
 - **Print view** — clean timetable layout, no interactive UI elements
@@ -154,6 +171,7 @@ Organizer only:
 ## Marketing Landing Page
 
 Simple, minimal:
+
 - Hero section with one-liner
 - Feature highlights (2-3 key points)
 - "Get Started" CTA to sign up
@@ -163,7 +181,7 @@ Simple, minimal:
 
 ## Tech Stack
 
-- **Frontend:** Next.js 15+ (App Router), TypeScript, Tailwind CSS
+- **Frontend:** Next.js 15+ (App Router), TypeScript, Tailwind CSS, shadcn/ui
 - **Database:** Drizzle ORM + PostgreSQL 16
 - **Auth:** Email/password + Google OAuth
 - **Deployment:** Docker Compose on Dokploy

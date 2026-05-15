@@ -26,6 +26,13 @@ Each entry should include: context, decision, and consequences.
 - **Decision:** Local file storage on the Dokploy server
 - **Consequences:** Simpler setup, no AWS S3 dependency, files tied to the server. Can migrate to S3 later if needed.
 
+## ADR-005: shadcn/ui for Component Library
+
+- **Date:** 2026-05-15
+- **Context:** Need UI primitives (buttons, inputs, modals, tabs, etc.). Options: build from scratch, use a full component library (MUI, Chakra), or use shadcn/ui (copy-paste, unstyled primitives).
+- **Decision:** Use shadcn/ui. Components are copied into the project (not an npm dependency), giving full control over styling. Custom components only for things shadcn/ui doesn't cover (AvatarStack, DragHandle, ColorPicker).
+- **Consequences:** Faster to build Phase 1, consistent accessibility out of the box, full control over look and feel since components are local source code, no version lock-in
+
 ## ADR-004: No Attendee Auth
 
 - **Date:** 2026-05-15
