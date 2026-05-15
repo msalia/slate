@@ -38,6 +38,7 @@ export const events = pgTable('events', {
   endDate: timestamp('end_date', { mode: 'date', withTimezone: true }).notNull(),
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
+  publishToken: text('publish_token'),
   slug: text('slug').notNull().unique(),
   startDate: timestamp('start_date', { mode: 'date', withTimezone: true }).notNull(),
   status: eventStatusEnum('status').notNull().default('draft'),
@@ -112,10 +113,10 @@ export const eventCategoriesRelations = relations(eventCategories, ({ one }) => 
 // ── Presenters ─────────────────────────────────────────────────────────────────
 
 export const presenters = pgTable('presenters', {
+  bio: text('bio'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  photoPath: text('photo_path'),
   role: text('role'),
   userId: uuid('user_id')
     .notNull()

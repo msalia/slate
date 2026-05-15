@@ -30,7 +30,9 @@ export function ThemeToggle() {
         onClick={() => setTheme('light')}
         className={cn(
           'inline-flex h-6 w-6 items-center justify-center rounded-sm transition-colors',
-          !isDark ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
+          !isDark
+            ? 'bg-background text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground',
         )}
       >
         <Sun className="h-3.5 w-3.5" />
@@ -39,7 +41,9 @@ export function ThemeToggle() {
         onClick={() => setTheme('dark')}
         className={cn(
           'inline-flex h-6 w-6 items-center justify-center rounded-sm transition-colors',
-          isDark ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
+          isDark
+            ? 'bg-background text-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground',
         )}
       >
         <Moon className="h-3.5 w-3.5" />

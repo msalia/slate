@@ -135,26 +135,27 @@ session_presenters (junction)
 
 ### 4.1 — Event List Page (`/dashboard`)
 
-- [ ] Fetch all events for the logged-in user
-- [ ] Card grid layout: each card shows event name, date range, session count, draft/published badge
-- [ ] "Create Event" button (prominent, top-right or center empty state)
-- [ ] Empty state for first-time users: illustration + "Create your first event"
-- [ ] Click card → navigate to `/events/[slug]/edit`
+- [x] Fetch all events for the logged-in user with session count (LEFT JOIN + GROUP BY)
+- [x] Card grid layout: event name, date range, session count, draft/published badge
+- [x] "Create Event" button in top bar + center empty state
+- [x] Empty state for first-time users: calendar icon + "No events yet" + CTA
+- [x] Click card → navigate to `/events/[slug]/edit`
 
 ### 4.2 — Create Event Flow
 
-- [ ] Modal or dedicated page with minimal form: name, start date, end date, timezone
-- [ ] Auto-generate slug from name (kebab-case, check uniqueness)
-- [ ] Default timezone to browser timezone
-- [ ] On submit → create event + redirect to calendar editor
+- [x] Dialog with minimal form: name, start date, end date, timezone (hidden, auto-detected)
+- [x] Auto-generate slug from name (kebab-case, uniqueness check with suffix)
+- [x] Default timezone to browser timezone via `Intl.DateTimeFormat`
+- [x] On submit → create event + redirect to calendar editor
+- [x] Zod validation, date ordering check
 
 ### 4.3 — Event Settings
 
-- [ ] Settings panel within the event editor (accessible via gear icon or settings tab)
-- [ ] Edit: name, date range, timezone, description (rich text editor)
-- [ ] Draft/published toggle
-- [ ] Shareable link display (copy button) — only shown when published
-- [ ] Delete event (with confirmation)
+- [x] Settings sheet (right slide-out) in the event editor, accessible via gear icon
+- [x] Edit: name, date range, timezone, description (textarea, rich text deferred)
+- [x] Draft/published toggle with Switch + Badge
+- [x] Shareable link display with copy button — only shown when published
+- [x] Delete event with confirmation dialog
 
 ---
 
@@ -162,20 +163,20 @@ session_presenters (junction)
 
 ### 5.1 — Track Management
 
-- [ ] Manage tracks within the calendar editor — tracks are the columns
-- [ ] Add track: "+" button at the end of the column headers
-- [ ] Edit track name: click to edit inline
-- [ ] Reorder tracks: drag handles on column headers
-- [ ] Delete track: only if no sessions assigned (or prompt to reassign)
+- [x] Manage tracks in right sidebar panel of the event editor
+- [x] Add track: input + "+" button, appends at end
+- [x] Edit track name: inline input, saves on blur
+- [x] Reorder tracks: server action ready (`reorderTracks`), drag UI deferred to Phase 7
+- [x] Delete track: blocked if sessions are assigned, shows error message
 
 ### 5.2 — Category Management
 
-- [ ] Manage categories from event settings panel
-- [ ] Add category: name + color picker (predefined palette of soft colors)
-- [ ] Edit / delete categories
-- [ ] Categories are scoped to the user but associated per-event
-- [ ] Reuse categories across events — show existing categories with "add to this event" option
-- [ ] Card-based list with color swatch, name, edit/delete actions
+- [x] Manage categories in right sidebar panel of the event editor
+- [x] Add category: name + color picker (8-color predefined palette)
+- [x] Remove category from event (unlink, not delete)
+- [x] Categories scoped to user, associated per-event via junction table
+- [x] Reuse categories across events — "Add existing category" section shows unassigned categories
+- [x] Color swatches displayed next to each category name
 
 ---
 
@@ -183,27 +184,22 @@ session_presenters (junction)
 
 ### 6.1 — Presenter Roster Page (`/presenters`)
 
-- [ ] List all presenters for the logged-in user (their personal roster)
-- [ ] Card-based list: photo (avatar), name, role, number of sessions assigned
-- [ ] Add presenter: name, role, photo upload
-- [ ] Edit / delete presenter
-- [ ] Search / filter by name
+- [x] List all presenters for the logged-in user with session count
+- [x] Card grid: avatar (initials), name, role, session count
+- [x] Add presenter via dialog: name + role (no photo upload — using initials avatars)
+- [x] Inline edit (name + role) and delete with confirmation
+- [x] Search/filter by name
 
 ### 6.2 — Inline Presenter Assignment
 
-- [ ] In the session editor (side panel), a "Presenters" field
-- [ ] Autocomplete from existing roster — type to search
-- [ ] Quick-add: if no match, option to create a new presenter inline (name + role + optional photo)
-- [ ] Multi-select — multiple presenters per session
-- [ ] Display as avatar face pile on the session card
+- [ ] In the session editor (side panel), a "Presenters" field — deferred to Phase 7
+- [ ] Autocomplete from existing roster — deferred to Phase 7
+- [ ] Multi-select — deferred to Phase 7
+- [x] Display as avatar face pile on event cards (dashboard)
 
 ### 6.3 — File Upload (Photos)
 
-- [ ] API route for file upload (`/api/upload`)
-- [ ] Accept images only (jpg, png, webp), max size 2MB
-- [ ] Store in local filesystem: `/uploads/presenters/<userId>/<filename>`
-- [ ] Serve via Next.js static file serving or a dedicated API route
-- [ ] Return the stored path for database reference
+- Skipped — using initials-based avatars instead
 
 ---
 

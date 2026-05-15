@@ -15,15 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { changePassword, deleteAccount, updateProfile } from '@/lib/auth/actions';
-
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-}
+import { getInitials } from '@/lib/utils';
 
 export function ProfileForm({ user }: { user: { name: string; email: string } | null }) {
   const [state, action, pending] = useActionState(updateProfile, null);

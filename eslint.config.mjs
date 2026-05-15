@@ -21,6 +21,12 @@ const eslintConfig = defineConfig([
       'perfectionist/sort-objects': ['error', { order: 'asc', type: 'alphabetical' }],
     },
   },
+  {
+    files: ['src/app/**/docs/**/*.tsx'],
+    rules: {
+      'react/no-unescaped-entities': 'off',
+    },
+  },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
 ]);
 
