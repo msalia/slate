@@ -31,3 +31,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Use `grid gap-*` for form layouts, `space-y-*` for vertical lists
 - Label + input groups use `grid gap-1.5`
 - Dialog forms use `grid gap-4` with `DialogFooter` for submit button
+- Deploy: ask the user to run `python3 scripts/deploy.py` — do NOT make API calls to dok.msalia.org directly (sandbox blocks it)
