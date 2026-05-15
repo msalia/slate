@@ -27,6 +27,12 @@ const eslintConfig = defineConfig([
       'react/no-unescaped-entities': 'off',
     },
   },
+  {
+    files: ['src/db/seed.ts', 'scripts/**/*.{ts,js,py}'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
 ]);
 
