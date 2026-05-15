@@ -1,24 +1,15 @@
-import { sql } from 'drizzle-orm';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-import { db } from '@/db';
-
-export const dynamic = 'force-dynamic';
-
-async function getHealth(): Promise<string> {
-  try {
-    await db.execute(sql`SELECT 1`);
-    return 'API and database are healthy';
-  } catch {
-    return 'Database is unreachable';
-  }
-}
+import { decrypt } from '@/lib/auth/session';
 
 export default async function Home() {
-  const health = await getHealth();
+  const cookie = (await cookies()).get('session')?.value;
+  const session = await decrypt(cookie);
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">{health}</h1>
-    </main>
-  );
+  if (session?.userId) {
+    redirect('/dashboard');
+  } else {
+    redirect('/login');
+  }
 }

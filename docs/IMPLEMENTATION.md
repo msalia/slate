@@ -10,11 +10,11 @@ Establish the visual foundation and layout before building features. Everything 
 
 ### 1.1 — shadcn/ui Setup & Tailwind Theme
 
-- [ ] Initialize shadcn/ui: `npx shadcn@latest init` (select default style, CSS variables, path aliases)
-- [ ] Configure Tailwind theme via CSS variables: color palette (soft accents, category colors), border-radius tokens (fully rounded for pills/badges, `lg` for cards), shadow scale
-- [ ] Set base font (Inter via `next/font` or similar clean sans-serif)
-- [ ] Global styles: soft background (`gray-50` or similar), default body text color
-- [ ] Dark mode: skip for v1 — light only
+- [x] Initialize shadcn/ui: manual setup with `components.json`, Radix primitives, CVA, `cn()` utility
+- [x] Configure Tailwind theme via CSS variables: OKLCH color palette (soft accents, 8 category colors), border-radius tokens, shadow scale
+- [x] Set base font (Inter via `next/font`)
+- [x] Global styles: semantic background/foreground via CSS variables
+- [x] Dark mode: full light/dark/system support via `next-themes`
 
 ### 1.2 — UI Components (shadcn/ui + Custom)
 
@@ -22,37 +22,40 @@ Install shadcn/ui primitives and customize their styles to match the Slate desig
 
 **From shadcn/ui** (install and customize):
 
-- [ ] `Button` — customize variants: primary (filled, rounded-full), secondary (outlined), destructive
-- [ ] `Input` / `Textarea` — customize to rounded, subtle border, focus ring
-- [ ] `Select` — rounded, consistent with inputs
-- [ ] `Dialog` / `Sheet` — use Sheet for the slide-out side panel (session editing)
-- [ ] `Card` — customize to white bg, subtle border + shadow, rounded-xl
-- [ ] `Badge` — customize for soft background pill labels
-- [ ] `Tabs` — customize for pill-shaped toggle group (active = filled, inactive = ghost)
-- [ ] `Avatar` — circular image with fallback initials
-- [ ] `Switch` — on/off toggle for draft/published
-- [ ] `Dropdown Menu` — for context menus and actions
-- [ ] `Popover` — for inline presenter creation, color pickers
-- [ ] `Command` — for autocomplete/search (presenter picker)
-- [ ] `Separator` — for clean dividers
-- [ ] `Skeleton` — for loading states
-- [ ] `Tooltip` — for icon-only actions
+- [x] `Button` — customize variants: primary (filled), secondary (outlined), destructive, ghost, link + sizes
+- [x] `Input` / `Textarea` — rounded-lg, subtle border, focus ring
+- [x] `Select` — rounded, consistent with inputs
+- [x] `Dialog` / `Sheet` — Sheet for slide-out side panel (session editing)
+- [x] `Card` — white/card bg, subtle border + shadow, rounded-xl
+- [x] `Badge` — soft background pill labels
+- [x] `Tabs` — pill-shaped toggle group (active = filled, inactive = ghost)
+- [x] `Avatar` — circular image with fallback initials
+- [x] `Switch` — on/off toggle for draft/published
+- [x] `Dropdown Menu` — for context menus and actions
+- [x] `Popover` — for inline presenter creation, color pickers
+- [ ] `Command` — for autocomplete/search (presenter picker) — deferred to Phase 6
+- [x] `Separator` — for clean dividers
+- [x] `Skeleton` — for loading states
+- [x] `Tooltip` — for icon-only actions
+- [x] `Label` — form labels
+- [x] `ScrollArea` — custom scrollbar areas
 
 **Custom components** (not in shadcn/ui):
 
-- [ ] `AvatarStack` — overlapping face pile for multiple presenters
-- [ ] `DragHandle` — 6-dot grid icon for reorderable items
-- [ ] `EmptyState` — illustration + message + CTA for empty lists
-- [ ] `ColorPicker` — predefined palette of soft colors for categories
+- [x] `AvatarStack` — overlapping face pile for multiple presenters
+- [x] `DragHandle` — 6-dot grid icon for reorderable items
+- [x] `EmptyState` — illustration + message + CTA for empty lists
+- [x] `ColorPicker` — predefined palette of soft colors for categories
 
 ### 1.3 — App Layout
 
-- [ ] Sidebar navigation: fixed left, icons + labels, clean dividers between sections
-  - Dashboard, Events (active event list), Presenters, Settings
-  - Bottom: user avatar + name, sign out
-- [ ] Main content area: flex-grow, scrollable, padded
-- [ ] Top bar: page title, breadcrumbs where needed
-- [ ] Side panel slot: right-side drawer that overlays content (for session editing, previews)
+- [x] Sidebar navigation: fixed left, icons + labels, clean dividers between sections
+  - Dashboard, Events, Presenters, Settings
+  - Bottom: theme toggle (light/dark/system). User avatar + sign out deferred to Phase 2 (auth).
+- [x] Main content area: flex-grow, scrollable
+- [x] Top bar: page title + action slot
+- [x] Side panel slot: right-side drawer component for session editing, previews
+- [x] Route groups: `(app)` for authenticated pages, `(auth)` for login/signup
 
 ---
 
@@ -60,22 +63,25 @@ Install shadcn/ui primitives and customize their styles to match the Slate desig
 
 ### 2.1 — Database Schema (Auth)
 
-- [ ] `users` table: id (uuid), email (unique), name, password_hash (nullable for OAuth), avatar_url, created_at, updated_at
+- [x] `users` table: id (uuid), email (unique), name, password_hash (nullable for OAuth), avatar_url, created_at, updated_at
 
 ### 2.2 — Auth Pages
 
-- [ ] `/login` — email + password form, "Sign in with Google" button, link to sign up
-- [ ] `/signup` — name, email, password form, "Sign up with Google" button, link to login
-- [ ] `/settings` — account settings page: update name, change password, delete account
-- [ ] All pages follow the design system — centered card on soft background, rounded inputs, pill buttons
+- [x] `/login` — email + password form, link to sign up. Google OAuth button deferred.
+- [x] `/signup` — name, email, password form, link to login. Google OAuth button deferred.
+- [x] `/settings` — account settings: update name, change password, delete account
+- [x] All pages follow design system — centered card on soft background, rounded inputs
 
 ### 2.3 — Auth Logic
 
-- [ ] NextAuth.js (or Auth.js) integration with credentials + Google OAuth providers
-- [ ] Password hashing with bcrypt
-- [ ] Session management via JWT or database sessions
-- [ ] Protected route middleware — redirect unauthenticated users to `/login`
-- [ ] Hard account deletion: delete user + cascade all their events, sessions, presenters, categories
+- [x] Custom auth with `jose` (JWT) + `bcryptjs` — simpler than NextAuth for this use case. Google OAuth can be added later.
+- [x] Password hashing with bcryptjs (10 rounds)
+- [x] Stateless JWT sessions in httpOnly cookies (7-day expiry)
+- [x] `proxy.ts` route protection — redirects unauthenticated users to `/login`, authenticated users away from auth pages
+- [x] Data Access Layer (DAL) with `verifySession()` and `getUser()` using React `cache()`
+- [x] Zod validation schemas for all forms
+- [x] Hard account deletion: delete user row (cascade to be wired in Phase 3 when other tables exist)
+- [x] Sidebar shows user avatar (initials) + name + logout button
 
 ---
 
@@ -118,9 +124,10 @@ session_presenters (junction)
 
 ### 3.2 — Migrations
 
-- [ ] Generate initial migration with `npm run db:generate`
-- [ ] Test migration against local PostgreSQL
-- [ ] Seed script with sample data (one event, a few tracks, sessions, presenters) for development
+- [x] Schema pushed via `drizzle-kit push` against local PostgreSQL (Postgres.app)
+- [x] All 8 tables created: users, events, tracks, categories, event_categories, presenters, sessions, session_presenters
+- [x] Seed script (`npm run db:seed`) — demo user, 1 event, 2 tracks, 3 categories, 3 presenters, 4 sessions with junction data
+- [x] All foreign keys with cascade deletes, junction tables with composite primary keys, Drizzle relations defined
 
 ---
 
