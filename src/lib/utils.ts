@@ -24,6 +24,54 @@ export function formatDateRange(start: Date, end: Date) {
   return `${startStr} – ${endStr}`;
 }
 
+export function formatTime(date: Date) {
+  return new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+  }).format(new Date(date));
+}
+
+export function formatTimeRange(start: Date, end: Date) {
+  return `${formatTime(start)} – ${formatTime(end)}`;
+}
+
+export function getHoursBetween(startHour: number, endHour: number): number[] {
+  const hours = [];
+  for (let h = startHour; h <= endHour; h++) {
+    hours.push(h);
+  }
+  return hours;
+}
+
+export function timeToMinutes(date: Date): number {
+  const d = new Date(date);
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+export function getDaysBetween(start: Date, end: Date): Date[] {
+  const days = [];
+  const current = new Date(start);
+  current.setHours(0, 0, 0, 0);
+  const last = new Date(end);
+  last.setHours(0, 0, 0, 0);
+  while (current <= last) {
+    days.push(new Date(current));
+    current.setDate(current.getDate() + 1);
+  }
+  return days;
+}
+
+export function isSameDay(a: Date, b: Date): boolean {
+  const da = new Date(a);
+  const db = new Date(b);
+  return (
+    da.getFullYear() === db.getFullYear() &&
+    da.getMonth() === db.getMonth() &&
+    da.getDate() === db.getDate()
+  );
+}
+
 export function timeAgo(date: Date) {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
   if (seconds < 60) {

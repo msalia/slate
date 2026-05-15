@@ -47,9 +47,14 @@ export function CategoryManager({
     <div className="space-y-3">
       <Label>Categories</Label>
       <div className="space-y-2">
+        {assigned.length === 0 && (
+          <p className="text-muted-foreground py-2 text-xs">
+            No categories assigned. Click one below to add it.
+          </p>
+        )}
         {assigned.map((cat) => (
           <div key={cat.id} className="flex items-center gap-2">
-            <GripVertical className="text-muted-foreground/50 h-4 w-4 shrink-0 cursor-grab" />
+            <GripVertical className="text-muted-foreground h-4 w-4 shrink-0 cursor-grab opacity-40 hover:opacity-70" />
             <div
               className="h-3 w-3 shrink-0 rounded-full"
               style={{ backgroundColor: `var(--${cat.color})` }}
@@ -69,7 +74,7 @@ export function CategoryManager({
 
       {unassigned.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-muted-foreground text-xs">Add existing category</p>
+          <p className="text-xs font-medium">Available categories</p>
           <div className="flex flex-wrap gap-1.5">
             {unassigned.map((cat) => (
               <button
@@ -89,7 +94,7 @@ export function CategoryManager({
       )}
 
       {showCreate ? (
-        <div className="space-y-2 rounded border p-3">
+        <div className="space-y-3 rounded border p-3">
           <Input
             placeholder="Category name"
             value={newName}

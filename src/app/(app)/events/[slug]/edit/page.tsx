@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation';
 
+import { CalendarGrid } from '@/components/calendar/calendar-grid';
 import { TopBar } from '@/components/layout/top-bar';
 import { Separator } from '@/components/ui/separator';
 import { verifySession } from '@/lib/auth/dal';
 import {
   getEventCategories,
+  getEventSessions,
   getEventTracks,
   getEventWithDetails,
   getUserCategories,
@@ -25,15 +27,17 @@ export default async function EventEditorPage({ params }: PageProps<'/events/[sl
     notFound();
   }
 
-  const [eventTracks, assignedCategories, allCategories, allPresenters] = await Promise.all([
-    getEventTracks(event.id),
-    getEventCategories(event.id),
-    getUserCategories(session.userId),
-    getUserPresenters(session.userId),
-  ]);
+  const [eventTracks, assignedCategories, allCategories, allPresenters, eventSessions] =
+    await Promise.all([
+      getEventTracks(event.id),
+      getEventCategories(event.id),
+      getUserCategories(session.userId),
+      getUserPresenters(session.userId),
+      getEventSessions(event.id),
+    ]);
 
   return (
-    <>
+    <div className="flex h-full flex-col overflow-hidden">
       <TopBar
         title={event.name}
         breadcrumbs={[{ href: '/dashboard', label: 'Events' }, { label: event.name }]}
@@ -41,12 +45,16 @@ export default async function EventEditorPage({ params }: PageProps<'/events/[sl
         <EventSettingsSheet event={event} />
       </TopBar>
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 overflow-auto p-6">
-          <div className="text-muted-foreground flex h-full items-center justify-center">
-            Calendar editor coming in Phase 7
-          </div>
+        <div className="flex-1 overflow-hidden">
+          <CalendarGrid
+            tracks={eventTracks}
+            sessions={eventSessions}
+            categories={assignedCategories}
+            startDate={event.startDate}
+            endDate={event.endDate}
+          />
         </div>
-        <div className="w-72 space-y-6 overflow-auto border-l p-4">
+        <div className="w-72 shrink-0 space-y-6 overflow-auto border-l p-4">
           <PublishCard
             eventId={event.id}
             publishToken={event.publishToken}
@@ -65,6 +73,6 @@ export default async function EventEditorPage({ params }: PageProps<'/events/[sl
           <PresenterManager presenters={allPresenters} />
         </div>
       </div>
-    </>
+    </div>
   );
 }

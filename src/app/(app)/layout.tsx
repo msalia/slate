@@ -8,9 +8,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const recentEvents = await getRecentEvents(session.userId);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="!h-svh !min-h-0">
       <AppSidebar user={user} recentEvents={recentEvents} />
-      <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden">{children}</main>
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{children}</main>
     </SidebarProvider>
   );
 }

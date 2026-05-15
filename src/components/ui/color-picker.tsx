@@ -21,7 +21,7 @@ interface ColorPickerProps {
 
 export function ColorPicker({ className, onChange, value }: ColorPickerProps) {
   return (
-    <div className={cn('flex flex-wrap gap-2', className)}>
+    <div className={cn('flex gap-1.5', className)}>
       {CATEGORY_COLORS.map((color) => (
         <button
           key={color.value}
@@ -29,7 +29,7 @@ export function ColorPicker({ className, onChange, value }: ColorPickerProps) {
           title={color.name}
           onClick={() => onChange?.(color.value)}
           className={cn(
-            'h-7 w-7 rounded-full transition-all hover:scale-110',
+            'h-6 w-6 rounded-full transition-all hover:scale-110',
             value === color.value && 'ring-ring ring-offset-background ring-2 ring-offset-2',
           )}
           style={{ backgroundColor: `var(--${color.value})` }}

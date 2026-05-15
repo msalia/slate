@@ -1,7 +1,7 @@
 'use client';
 
-import { GripVertical, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { GripVertical, Plus, Search } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createPresenter } from '@/lib/presenter-actions';
 import { getInitials } from '@/lib/utils';
+
+const MAX_VISIBLE = 7;
 
 interface PresenterManagerProps {
   presenters: { id: string; name: string; role: string | null }[];
@@ -18,11 +20,21 @@ export function PresenterManager({ presenters }: PresenterManagerProps) {
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
+  const [search, setSearch] = useState('');
+
+  const filtered = useMemo(() => {
+    if (!search) {return presenters;}
+    const q = search.toLowerCase();
+    return presenters.filter(
+      (p) => p.name.toLowerCase().includes(q) || p.role?.toLowerCase().includes(q),
+    );
+  }, [presenters, search]);
+
+  const visible = filtered.slice(0, MAX_VISIBLE);
+  const remaining = filtered.length - MAX_VISIBLE;
 
   async function handleAdd() {
-    if (!name.trim()) {
-      return;
-    }
+    if (!name.trim()) {return;}
     await createPresenter(name.trim(), role.trim() || null);
     setName('');
     setRole('');
@@ -32,10 +44,21 @@ export function PresenterManager({ presenters }: PresenterManagerProps) {
   return (
     <div className="space-y-3">
       <Label>Presenters</Label>
+      {presenters.length > MAX_VISIBLE && (
+        <div className="relative">
+          <Search className="text-muted-foreground absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2" />
+          <Input
+            placeholder="Search presenters..."
+            className="pl-8 text-xs"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      )}
       <div className="space-y-1">
-        {presenters.map((p) => (
+        {visible.map((p) => (
           <div key={p.id} className="flex items-center gap-2 rounded-md px-1 py-1.5">
-            <GripVertical className="text-muted-foreground/50 h-4 w-4 shrink-0 cursor-grab" />
+            <GripVertical className="text-muted-foreground h-4 w-4 shrink-0 cursor-grab opacity-40 hover:opacity-70" />
             <Avatar className="h-8 w-8 shrink-0 rounded-full">
               <AvatarFallback className="rounded-full text-xs">
                 {getInitials(p.name)}
@@ -47,8 +70,16 @@ export function PresenterManager({ presenters }: PresenterManagerProps) {
             </div>
           </div>
         ))}
+        {remaining > 0 && !search && (
+          <p className="text-muted-foreground px-1 py-1 text-xs">
+            +{remaining} more — use search to find
+          </p>
+        )}
         {presenters.length === 0 && (
-          <p className="text-muted-foreground py-3 text-center text-xs">No presenters yet</p>
+          <p className="text-muted-foreground py-3 text-xs">No presenters yet</p>
+        )}
+        {search && filtered.length === 0 && (
+          <p className="text-muted-foreground py-3 text-xs">No matches</p>
         )}
       </div>
 

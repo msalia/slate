@@ -125,3 +125,35 @@ export async function getEventWithDetails(slug: string, userId: string) {
 
   return result[0] ?? null;
 }
+
+export async function getEventSessions(eventId: string) {
+  const result = await db
+    .select({
+      categoryId: sessions.categoryId,
+      description: sessions.description,
+      endTime: sessions.endTime,
+      id: sessions.id,
+      isBreak: sessions.isBreak,
+      position: sessions.position,
+      startTime: sessions.startTime,
+      title: sessions.title,
+      trackId: sessions.trackId,
+    })
+    .from(sessions)
+    .where(eq(sessions.eventId, eventId))
+    .orderBy(sessions.startTime, sessions.position);
+
+  const sessionsWithPresenters = await Promise.all(
+    result.map(async (session) => {
+      const presenterList = await db
+        .select({ id: presenters.id, name: presenters.name })
+        .from(presenters)
+        .innerJoin(sessionPresenters, eq(presenters.id, sessionPresenters.presenterId))
+        .where(eq(sessionPresenters.sessionId, session.id));
+
+      return { ...session, presenters: presenterList };
+    }),
+  );
+
+  return sessionsWithPresenters;
+}
