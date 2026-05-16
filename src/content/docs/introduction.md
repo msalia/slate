@@ -1,10 +1,10 @@
 # Introduction
 
-Slate is an event schedule management tool designed for organizers who need to plan, build, and share schedules for single or multi-day events.
+CueFlo is an event schedule management tool designed for organizers who need to plan, build, and share schedules for single or multi-day events.
 
-## What is Slate?
+## What is CueFlo?
 
-Whether you're organizing a tech conference, a workshop series, or a multi-day summit, Slate gives you a visual calendar editor to build your schedule, manage your presenters, and share the final agenda with attendees — all from one place.
+Whether you're organizing a tech conference, a workshop series, or a multi-day summit, CueFlo gives you a visual calendar editor to build your schedule, manage your presenters, and share the final agenda with attendees — all from one place.
 
 ## Key Features
 
@@ -18,4 +18,4 @@ Whether you're organizing a tech conference, a workshop series, or a multi-day s
 
 ## Getting Started
 
-If you're new to Slate, head over to the [Getting Started](/docs/getting-started) guide to create your first event in under a minute.
+If you're new to CueFlo, head over to the [Getting Started](/docs/getting-started) guide to create your first event in under a minute.

@@ -1,6 +1,6 @@
 # Presenters
 
-Presenters are the speakers, panelists, and facilitators at your events. Slate maintains a single roster of presenters across all your events.
+Presenters are the speakers, panelists, and facilitators at your events. CueFlo maintains a single roster of presenters across all your events.
 
 ## Your Presenter Roster
 
@@ -29,4 +29,4 @@ Presenters are scoped to your account, not to a single event. Once you add a pre
 
 ## Presenter Avatars
 
-Slate generates avatar initials from each presenter's name. These appear as circular badges on session cards, event cards (as a face pile), and in the editor sidebar. The avatars help you visually identify who's presenting at a glance.
+CueFlo generates avatar initials from each presenter's name. These appear as circular badges on session cards, event cards (as a face pile), and in the editor sidebar. The avatars help you visually identify who's presenting at a glance.

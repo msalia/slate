@@ -74,7 +74,7 @@ export function AppSidebar({ recentEvents, user }: AppSidebarProps) {
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2 px-2 py-1">
           <Calendar className="h-5 w-5 shrink-0" />
-          <span className="font-semibold group-data-[collapsible=icon]:hidden">Slate</span>
+          <span className="font-semibold group-data-[collapsible=icon]:hidden">CueFlo</span>
         </Link>
       </SidebarHeader>
 

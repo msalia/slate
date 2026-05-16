@@ -47,12 +47,8 @@
           "name": "categories_user_id_users_id_fk",
           "tableFrom": "categories",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -86,12 +82,8 @@
           "name": "event_categories_category_id_categories_id_fk",
           "tableFrom": "event_categories",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -99,12 +91,8 @@
           "name": "event_categories_event_id_events_id_fk",
           "tableFrom": "event_categories",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -112,10 +100,7 @@
       "compositePrimaryKeys": {
         "event_categories_event_id_category_id_pk": {
           "name": "event_categories_event_id_category_id_pk",
-          "columns": [
-            "event_id",
-            "category_id"
-          ]
+          "columns": ["event_id", "category_id"]
         }
       },
       "uniqueConstraints": {},
@@ -212,12 +197,8 @@
           "name": "events_user_id_users_id_fk",
           "tableFrom": "events",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -227,9 +208,7 @@
         "events_slug_unique": {
           "name": "events_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -285,12 +264,8 @@
           "name": "presenters_user_id_users_id_fk",
           "tableFrom": "presenters",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -324,12 +299,8 @@
           "name": "session_presenters_presenter_id_presenters_id_fk",
           "tableFrom": "session_presenters",
           "tableTo": "presenters",
-          "columnsFrom": [
-            "presenter_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["presenter_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -337,12 +308,8 @@
           "name": "session_presenters_session_id_sessions_id_fk",
           "tableFrom": "session_presenters",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -350,10 +317,7 @@
       "compositePrimaryKeys": {
         "session_presenters_session_id_presenter_id_pk": {
           "name": "session_presenters_session_id_presenter_id_pk",
-          "columns": [
-            "session_id",
-            "presenter_id"
-          ]
+          "columns": ["session_id", "presenter_id"]
         }
       },
       "uniqueConstraints": {},
@@ -449,12 +413,8 @@
           "name": "sessions_category_id_categories_id_fk",
           "tableFrom": "sessions",
           "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -462,12 +422,8 @@
           "name": "sessions_event_id_events_id_fk",
           "tableFrom": "sessions",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -475,12 +431,8 @@
           "name": "sessions_track_id_tracks_id_fk",
           "tableFrom": "sessions",
           "tableTo": "tracks",
-          "columnsFrom": [
-            "track_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["track_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -528,12 +480,8 @@
           "name": "tracks_event_id_events_id_fk",
           "tableFrom": "tracks",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -601,9 +549,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -615,10 +561,7 @@
     "public.event_status": {
       "name": "event_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "published"
-      ]
+      "values": ["draft", "published"]
     }
   },
   "schemas": {},

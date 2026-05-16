@@ -4,7 +4,7 @@
 
 This project deploys to Dokploy at https://dok.msalia.org.
 Dokploy pulls from the GitHub repo, builds with Docker Compose, and runs
-the stack (web + db) behind HTTPS at slate.msalia.org.
+the stack (web + db) behind HTTPS at cueflo.app.
 
 ## Ship Code
 

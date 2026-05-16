@@ -23,7 +23,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 <line x1="3" x2="21" y1="10" y2="10" />
               </svg>
             </div>
-            Slate
+            CueFlo
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-center">
@@ -34,7 +34,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-10">
           <blockquote className="max-w-md space-y-2 text-center">
             <p className="text-lg font-medium">
-              &ldquo;Slate made it effortless to plan our two-day conference. The visual schedule
+              &ldquo;CueFlo made it effortless to plan our two-day conference. The visual schedule
               builder saved us hours of back-and-forth.&rdquo;
             </p>
             <footer className="text-muted-foreground text-sm">— Event Organizer</footer>

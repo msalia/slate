@@ -2,7 +2,7 @@
 
 ## Domain
 
-- **URL:** https://slate.msalia.org
+- **URL:** https://cueflo.app
 - **DNS Provider:** AWS Lightsail
 - **Record Type:** A
 - **Target IP:** 108.174.61.68
@@ -10,7 +10,7 @@
 
 ## GitHub Repository
 
-- **URL:** https://github.com/msalia/slate
+- **URL:** https://github.com/msalia/cueflo
 - **Visibility:** public
 - **Default Branch:** main
 

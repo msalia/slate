@@ -1,4 +1,4 @@
-# Slate
+# Cueflo
 
 Event schedule management tool for organizers of single or multi-day events.
 
@@ -19,7 +19,7 @@ docker compose up --build
 
 # Or hybrid mode (DB in Docker, Next.js native)
 docker compose up db
-export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/slate
+export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/cueflo
 npm run db:push
 npm run dev
 ```

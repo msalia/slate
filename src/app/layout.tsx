@@ -12,7 +12,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   description: 'Event schedule management for organizers',
-  title: 'Slate',
+  title: 'CueFlo',
 };
 
 export default function RootLayout({

@@ -13,8 +13,8 @@
 1. Clone the repo:
 
    ```bash
-   git clone git@github.com:msalia/slate.git
-   cd slate
+   git clone git@github.com:msalia/cueflo.git
+   cd cueflo
    ```
 
 2. Install dependencies:
@@ -42,7 +42,7 @@
    docker compose up db
 
    # Terminal 2 — Web (with hot reload)
-   export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/slate
+   export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/cueflo
    npm run db:push
    npm run dev
    ```
@@ -50,7 +50,7 @@
 ## Project Structure
 
 ```
-slate/
+cueflo/
 ├── .env                        # Local dev defaults (committed)
 ├── docker-compose.yml          # Production compose (web + db)
 ├── docker-compose.override.yml # Local dev port mappings

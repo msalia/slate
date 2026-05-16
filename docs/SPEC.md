@@ -186,7 +186,7 @@ Simple, minimal:
 - **Auth:** Email/password + Google OAuth
 - **Deployment:** Docker Compose on Dokploy
 - **File storage:** Local on server (presenter photos)
-- **Domain:** slate.msalia.org (subdomain, dedicated domain later)
+- **Domain:** cueflo.app
 
 ---
 

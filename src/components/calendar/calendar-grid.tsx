@@ -20,9 +20,15 @@ const LABEL_HOURS = getHoursBetween(START_HOUR + 1, END_HOUR - 1);
 const GRID_HOURS = getHoursBetween(START_HOUR, END_HOUR - 1);
 
 function formatHour(hour: number): string {
-  if (hour === 0 || hour === 24) {return '12 AM';}
-  if (hour === 12) {return '12 PM';}
-  if (hour < 12) {return `${hour} AM`;}
+  if (hour === 0 || hour === 24) {
+    return '12 AM';
+  }
+  if (hour === 12) {
+    return '12 PM';
+  }
+  if (hour < 12) {
+    return `${hour} AM`;
+  }
   return `${hour - 12} PM`;
 }
 
@@ -166,7 +172,9 @@ function SessionCard({
 function NowIndicator() {
   const now = new Date();
   const min = timeToMinutes(now);
-  if (min < START_HOUR * 60 || min > END_HOUR * 60) {return null;}
+  if (min < START_HOUR * 60 || min > END_HOUR * 60) {
+    return null;
+  }
   const top = (min - START_HOUR * 60) * (HOUR_HEIGHT / 60);
 
   return (
@@ -197,7 +205,9 @@ export function CalendarGrid({
 
   // Auto-scroll to show sessions or default to 9am
   useEffect(() => {
-    if (hasScrolled.current || !scrollRef.current) {return;}
+    if (hasScrolled.current || !scrollRef.current) {
+      return;
+    }
     hasScrolled.current = true;
 
     let scrollToHour = 9;

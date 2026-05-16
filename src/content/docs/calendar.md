@@ -1,6 +1,6 @@
 # Calendar Editor
 
-The calendar editor is the heart of Slate — a visual grid where you build your event schedule by creating and arranging sessions across tracks and time slots.
+The calendar editor is the heart of CueFlo — a visual grid where you build your event schedule by creating and arranging sessions across tracks and time slots.
 
 ## Layout
 

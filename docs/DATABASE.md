@@ -126,7 +126,7 @@ users ──< events ──< tracks
 
 ```bash
 npm run db:push      # Push schema changes directly to local DB (dev only)
-npm run db:seed      # Seed with demo data (demo@slate.dev / password1)
+npm run db:seed      # Seed with demo data (demo@cueflo.app / password1)
 npm run db:generate  # Generate migration SQL files in ./drizzle/
 npm run db:migrate   # Run pending migrations against DATABASE_URL
 npm run db:studio    # Open Drizzle Studio

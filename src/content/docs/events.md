@@ -1,6 +1,6 @@
 # Events
 
-Events are the top-level container in Slate. Each event represents a conference, meetup, or any scheduled gathering with its own timeline, tracks, and sessions.
+Events are the top-level container in CueFlo. Each event represents a conference, meetup, or any scheduled gathering with its own timeline, tracks, and sessions.
 
 ## Creating an Event
 

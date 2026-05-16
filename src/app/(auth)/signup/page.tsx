@@ -15,7 +15,7 @@ export default function SignupPage() {
     <form action={action} className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Create an account</h1>
-        <p className="text-muted-foreground text-sm">Get started with Slate</p>
+        <p className="text-muted-foreground text-sm">Get started with CueFlo</p>
       </div>
       {state?.message && <p className="text-destructive text-sm">{state.message}</p>}
       <div className="grid gap-4">

@@ -3,7 +3,7 @@ import path from 'path';
 
 export const docsOrder = [
   {
-    description: 'Learn what Slate is and what it can do for your events.',
+    description: 'Learn what CueFlo is and what it can do for your events.',
     href: '/docs',
     slug: 'introduction',
     title: 'Introduction',

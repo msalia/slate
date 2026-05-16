@@ -23,7 +23,9 @@ export function PresenterManager({ presenters }: PresenterManagerProps) {
   const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    if (!search) {return presenters;}
+    if (!search) {
+      return presenters;
+    }
     const q = search.toLowerCase();
     return presenters.filter(
       (p) => p.name.toLowerCase().includes(q) || p.role?.toLowerCase().includes(q),
@@ -34,7 +36,9 @@ export function PresenterManager({ presenters }: PresenterManagerProps) {
   const remaining = filtered.length - MAX_VISIBLE;
 
   async function handleAdd() {
-    if (!name.trim()) {return;}
+    if (!name.trim()) {
+      return;
+    }
     await createPresenter(name.trim(), role.trim() || null);
     setName('');
     setRole('');

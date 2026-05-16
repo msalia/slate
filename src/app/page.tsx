@@ -69,7 +69,7 @@ export default async function Home() {
       <header className="absolute top-0 right-0 left-0 z-20 flex h-14 items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
           <Calendar className="h-5 w-5" />
-          <span className="font-semibold">Slate</span>
+          <span className="font-semibold">CueFlo</span>
         </Link>
         <div className="flex items-center gap-3">
           <Link href="/login" className={cn(buttonVariants({ variant: 'ghost' }))}>
@@ -91,7 +91,7 @@ export default async function Home() {
                 Everything you need to plan your event
               </h2>
               <p className="text-muted-foreground mx-auto mt-3 max-w-xl">
-                From building the schedule to sharing it with attendees — Slate handles the entire
+                From building the schedule to sharing it with attendees — CueFlo handles the entire
                 workflow.
               </p>
             </div>
@@ -121,7 +121,7 @@ export default async function Home() {
             <h3 className="mt-3 text-2xl font-semibold tracking-tight">
               Build your next event
               <br />
-              schedule with Slate.
+              schedule with CueFlo.
             </h3>
             <Link href="/signup" className={cn(buttonVariants({ size: 'lg' }), 'mt-6 gap-2')}>
               Create your first event
@@ -160,7 +160,8 @@ export default async function Home() {
 
         <div className="mx-auto mt-12 flex max-w-5xl items-center justify-between border-t pt-8">
           <div className="text-muted-foreground flex items-center gap-2 text-sm">
-            <Calendar className="h-4 w-4" />© {new Date().getFullYear()} Slate. All rights reserved.
+            <Calendar className="h-4 w-4" />© {new Date().getFullYear()} CueFlo. All rights
+            reserved.
           </div>
         </div>
       </footer>

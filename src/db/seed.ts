@@ -14,7 +14,7 @@ async function seed() {
   const [user] = await db
     .insert(schema.users)
     .values({
-      email: 'demo@slate.dev',
+      email: 'demo@cueflo.app',
       name: 'Demo User',
       passwordHash,
     })
@@ -131,7 +131,7 @@ async function seed() {
   ]);
 
   console.log('Seed complete!');
-  console.log(`  User: demo@slate.dev / password1`);
+  console.log(`  User: demo@cueflo.app / password1`);
   console.log(`  Event: ${event.name} (${event.slug})`);
 
   await client.end();

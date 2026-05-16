@@ -214,7 +214,7 @@ export function Hero() {
           <span className="text-primary">built visually.</span>
         </h1>
         <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-lg">
-          Slate is the schedule management tool for event organizers. Plan your conference,
+          CueFlo is the schedule management tool for event organizers. Plan your conference,
           workshop, or summit with a drag-and-drop calendar editor — then share it with attendees in
           one click.
         </p>
