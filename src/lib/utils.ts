@@ -49,17 +49,87 @@ export function timeToMinutes(date: Date): number {
   return d.getHours() * 60 + d.getMinutes();
 }
 
+export function addMinutes(date: Date, minutes: number): Date {
+  const d = new Date(date);
+  d.setMinutes(d.getMinutes() + minutes);
+  return d;
+}
+
+export function snapToInterval(date: Date, intervalMinutes: number): Date {
+  const d = new Date(date);
+  d.setMinutes(Math.round(d.getMinutes() / intervalMinutes) * intervalMinutes, 0, 0);
+  return d;
+}
+
+export function toTimeInputValue(date: Date): string {
+  const d = new Date(date);
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+/**
+ * Parses a `yyyy-MM-dd` form value as a LOCAL date. `new Date('2026-05-22')`
+ * is UTC midnight, which lands on the 21st for anyone west of Greenwich.
+ */
+export function parseDateInput(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day, 0, 0, 0, 0);
+}
+
+export function setTimeOnDay(day: Date, timeValue: string): Date {
+  const [hours, minutes] = timeValue.split(':').map(Number);
+  const d = new Date(day);
+  d.setHours(hours, minutes, 0, 0);
+  return d;
+}
+
+export function sessionsOverlap(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): boolean {
+  return (
+    new Date(aStart).getTime() < new Date(bEnd).getTime() &&
+    new Date(bStart).getTime() < new Date(aEnd).getTime()
+  );
+}
+
 export function getDaysBetween(start: Date, end: Date): Date[] {
+  const a = new Date(start);
+  a.setHours(0, 0, 0, 0);
+  const b = new Date(end);
+  b.setHours(0, 0, 0, 0);
+
+  // An event whose dates got saved out of order must still render a usable range.
+  const current = a <= b ? a : b;
+  const last = a <= b ? b : a;
+
   const days = [];
-  const current = new Date(start);
-  current.setHours(0, 0, 0, 0);
-  const last = new Date(end);
-  last.setHours(0, 0, 0, 0);
   while (current <= last) {
     days.push(new Date(current));
     current.setDate(current.getDate() + 1);
   }
   return days;
+}
+
+/**
+ * Days the calendar should offer: the event's own range, plus any day a session
+ * actually falls on. Sessions scheduled outside the event range stay reachable
+ * instead of silently vanishing from the grid.
+ */
+export function getCalendarDays(start: Date, end: Date, sessionStarts: Date[]): Date[] {
+  const byTime = new Map<number, Date>();
+
+  for (const day of getDaysBetween(start, end)) {
+    byTime.set(day.getTime(), day);
+  }
+
+  for (const sessionStart of sessionStarts) {
+    const day = new Date(sessionStart);
+    day.setHours(0, 0, 0, 0);
+    if (!Number.isNaN(day.getTime())) {
+      byTime.set(day.getTime(), day);
+    }
+  }
+
+  return [...byTime.values()].sort((x, y) => x.getTime() - y.getTime());
 }
 
 export function isSameDay(a: Date, b: Date): boolean {

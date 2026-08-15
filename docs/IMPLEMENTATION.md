@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Step-by-step build order for Slate v1. Each phase builds on the previous one. Phases are designed so the app is functional at the end of each — no half-built states.
+Step-by-step build order for CueFlo v1. Each phase builds on the previous one. Phases are designed so the app is functional at the end of each — no half-built states.
 
 ---
 
@@ -33,7 +33,7 @@ Install shadcn/ui primitives and customize their styles to match the Slate desig
 - [x] `Switch` — on/off toggle for draft/published
 - [x] `Dropdown Menu` — for context menus and actions
 - [x] `Popover` — for inline presenter creation, color pickers
-- [ ] `Command` — for autocomplete/search (presenter picker) — deferred to Phase 6
+- [x] `Command` — used by the timezone picker and the presenter multi-select
 - [x] `Separator` — for clean dividers
 - [x] `Skeleton` — for loading states
 - [x] `Tooltip` — for icon-only actions
@@ -192,9 +192,9 @@ session_presenters (junction)
 
 ### 6.2 — Inline Presenter Assignment
 
-- [ ] In the session editor (side panel), a "Presenters" field — deferred to Phase 7
-- [ ] Autocomplete from existing roster — deferred to Phase 7
-- [ ] Multi-select — deferred to Phase 7
+- [x] In the session editor (side panel), a "Presenters" field
+- [x] Autocomplete from existing roster (`src/components/presenters/presenter-picker.tsx`)
+- [x] Multi-select, with removable badges
 - [x] Display as avatar face pile on event cards (dashboard)
 
 ### 6.3 — File Upload (Photos)
@@ -209,48 +209,48 @@ The core feature. Build incrementally — get the grid rendering first, then add
 
 ### 7.1 — Calendar Grid (Static)
 
-- [ ] Time axis: vertical, top-to-bottom, hours on the left margin
-- [ ] 30-minute grid lines (thin, subtle — `border-gray-100` or similar)
-- [ ] Hour labels: `08:00`, `09:00`, etc. — range based on event's first/last session (or default 8am-6pm)
-- [ ] Track columns: each track is a column, header row shows track name
-- [ ] Day headers: date label at the top of each day's column group
-- [ ] Day navigation: tabs for multi-day events, show 1-3 days at once, horizontal scroll for more
-- [ ] Current time indicator: red/accent horizontal line spanning all columns
-- [ ] Responsive: minimum column width, horizontal scroll when tracks overflow
+- [x] Time axis: vertical, top-to-bottom, hours on the left margin
+- [x] 30-minute grid lines (thin, subtle — `border-border/40` hour, `/20` half-hour)
+- [x] Hour labels: full 24h grid, auto-scrolled to the first session (or 9am)
+- [x] Track columns: each track is a column, header row shows track name
+- [x] Day headers: date label at the top of each day's column group. Day list = event range ∪ days that actually have sessions, so out-of-range sessions stay reachable
+- [x] Day navigation: tabs for multi-day events, show 1-3 days at once, horizontal scroll for more
+- [x] Current time indicator: red/accent horizontal line spanning all columns
+- [x] Responsive: minimum column width, horizontal scroll when tracks overflow
 
 ### 7.2 — Session Rendering
 
-- [ ] Render sessions as cards positioned on the grid
-- [ ] Position: top offset = start time, height = duration (proportional to time)
-- [ ] Card style: white bg, full colored border (category color), rounded-lg, subtle shadow
-- [ ] Card content: bold title, time range (`09:00 - 10:30`), description snippet (1 line, truncated), presenter face pile
-- [ ] Break blocks: hatched/striped background pattern, muted colors, distinct from sessions
+- [x] Render sessions as cards positioned on the grid
+- [x] Position: top offset = start time, height = duration (proportional to time)
+- [x] Card style: category-tinted bg + border, rounded-lg, subtle shadow
+- [x] Card content: title, time range, description snippet, presenter face pile — each shown only when the card is tall enough
+- [x] Break blocks: hatched/striped background pattern, muted colors, distinct from sessions
 
 ### 7.3 — Session CRUD (Side Panel)
 
-- [ ] Click empty time slot → open side panel with "New Session" form
-- [ ] Click existing session → open side panel with edit form
-- [ ] Form fields: title, start time, end time (time pickers with minute precision), track (dropdown), category (dropdown with color swatches), description (rich text), presenters (autocomplete multi-select), is-break toggle
-- [ ] Save / Cancel / Delete buttons
-- [ ] Auto-save or explicit save — decide during build
-- [ ] Optimistic UI updates — card appears/updates immediately, syncs to server
+- [x] Click empty time slot → open side panel with "New session" form, start time snapped to 15 min, 1h default duration
+- [x] Click existing session → open side panel with edit form
+- [x] Form fields: title, date (shadcn `Calendar` popover), start/end time, track, category (with colour swatches), description, presenters (autocomplete multi-select), is-break toggle. react-hook-form + zodResolver over a schema shared with the server action (`src/lib/session-schema.ts`); shadcn `Field` for layout and errors
+- [x] Save / Cancel / Delete buttons
+- [x] Explicit save — auto-save would fight the overlap check
+- [x] Optimistic UI updates — drags apply instantly via `useOptimistic` and roll back if the server refuses. Form saves still round-trip through `revalidatePath` (a save closes the panel, so there is nothing to keep in sync)
 
 ### 7.4 — Drag-and-Drop
 
-- [ ] Install `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/utilities`
-- [ ] Drag to move: pick up a session card, move to a different time slot or track
-- [ ] Snap to 5-minute intervals while dragging
-- [ ] Visual feedback: ghost card at new position, original card dimmed
-- [ ] Drop → update start/end time and track, persist to database
-- [ ] Click-and-drag on empty grid to create a new session (drag defines the time range)
-- [ ] Collision detection: prevent overlapping sessions in the same track
+- [x] Install `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/utilities`
+- [x] Drag to move: grab the 6-dot handle on a card (hover or keyboard focus) and move it in time or across tracks. The handle keeps click-to-edit and drag-to-move from fighting over the same gesture
+- [x] Snap to 5-minute intervals while dragging (`DRAG_SNAP_MINUTES`, via `shiftSessionTimes`, which preserves duration)
+- [x] Visual feedback: `DragOverlay` ghost showing the prospective time, original dimmed to 40%, target column tinted, ghost ringed red when the drop would clash
+- [x] Drop → `moveSession`, a narrow action that only moves a session so a drag never round-trips the whole form
+- [x] Click-and-drag on empty grid to create a new session; the drawn range stays outlined while the panel is open. A plain click still opens a 1-hour default
+- [x] Collision detection: refused at drop with an explanatory message, previewed during the drag, and independently re-checked server-side against the database
 
 ### 7.5 — Polish & Interactions
 
-- [ ] Smooth transitions on card move/resize (CSS transitions or Framer Motion)
-- [ ] Keyboard accessibility: arrow keys to navigate, Enter to select/edit
-- [ ] Undo last action (optional stretch goal)
-- [ ] Auto-scroll when dragging near grid edges
+- [x] Smooth transitions on card move (CSS `transition-[top,height]`, suppressed mid-drag so the card cannot lag the pointer). No Framer Motion — dnd-kit already owns `transform` on the dragged node, and two libraries writing the same property is a jitter source
+- [x] Keyboard accessibility: cards are buttons (Tab to reach, Enter/Space to edit); the drag handle is separately focusable and drives dnd-kit’s `KeyboardSensor` (Space to lift, arrows to move, Escape to cancel)
+- [x] Undo last action — a move surfaces an "Undo" affordance that replays the previous position through the same action
+- [x] Auto-scroll when dragging near grid edges — dnd-kit’s built-in auto-scroll, which finds the grid’s scroll container
 
 ---
 
@@ -354,6 +354,7 @@ The core feature. Build incrementally — get the grid rendering first, then add
 - [ ] Component tests: session card rendering, filter logic, export generation
 - [ ] Integration tests: auth flow, event CRUD, session CRUD
 - [ ] E2E test: create account → create event → add sessions → publish → view public page
+- [x] E2E harness: Playwright (`playwright.config.ts`, `e2e/`, `npm run test:e2e`). Specs run against the real dev server + local Postgres container — server actions can't be stubbed at the network layer, so each spec creates its sessions in a late-evening slot and deletes them again. `e2e/session-crud.spec.ts` covers 7.3.
 
 ---
 

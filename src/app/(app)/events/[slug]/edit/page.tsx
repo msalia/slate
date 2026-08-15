@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import { CalendarGrid } from '@/components/calendar/calendar-grid';
+import { CalendarEditor } from '@/components/calendar/calendar-editor';
 import { TopBar } from '@/components/layout/top-bar';
 import { Separator } from '@/components/ui/separator';
 import { verifySession } from '@/lib/auth/dal';
@@ -45,11 +45,13 @@ export default async function EventEditorPage({ params }: PageProps<'/events/[sl
         <EventSettingsSheet event={event} />
       </TopBar>
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 overflow-hidden">
-          <CalendarGrid
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <CalendarEditor
+            eventId={event.id}
             tracks={eventTracks}
             sessions={eventSessions}
             categories={assignedCategories}
+            presenters={allPresenters}
             startDate={event.startDate}
             endDate={event.endDate}
           />

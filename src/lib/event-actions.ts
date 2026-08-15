@@ -82,6 +82,10 @@ export async function updateEvent(
 
   const { description, endDate, name, startDate, timezone } = parsed.data;
 
+  if (new Date(endDate) < new Date(startDate)) {
+    return { errors: { endDate: ['End date must be after start date'] } };
+  }
+
   await db
     .update(events)
     .set({
