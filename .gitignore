@@ -32,7 +32,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files — holds credentials and machine-specific ports; copy .env.example
+.env
 .env.local
 .env.production
 .env*.local
