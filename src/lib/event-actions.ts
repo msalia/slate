@@ -3,57 +3,39 @@
 import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { z } from 'zod';
 
 import { db } from '@/db';
 import { events } from '@/db/schema';
 import { verifySession } from '@/lib/auth/dal';
-import { type FormState } from '@/lib/auth/validation';
+import { type FormResult } from '@/lib/auth/validation';
+import {
+  createEventSchema,
+  type CreateEventValues,
+  updateEventSchema,
+  type UpdateEventValues,
+} from '@/lib/event-schema';
 import { uniqueSlug } from '@/lib/slug';
 import { generatePublishToken } from '@/lib/token';
+import { parseDateInput } from '@/lib/utils';
 
-const createEventSchema = z.object({
-  endDate: z.string().min(1, 'End date is required'),
-  name: z.string().min(1, 'Name is required').max(100).trim(),
-  startDate: z.string().min(1, 'Start date is required'),
-  timezone: z.string().min(1),
-});
-
-const updateEventSchema = z.object({
-  description: z.string().optional(),
-  endDate: z.string().min(1, 'End date is required'),
-  name: z.string().min(1, 'Name is required').max(100).trim(),
-  startDate: z.string().min(1, 'Start date is required'),
-  timezone: z.string().min(1),
-});
-
-export async function createEvent(_prev: FormState, formData: FormData): Promise<FormState> {
+export async function createEvent(input: CreateEventValues): Promise<FormResult> {
   const session = await verifySession();
 
-  const parsed = createEventSchema.safeParse({
-    endDate: formData.get('endDate'),
-    name: formData.get('name'),
-    startDate: formData.get('startDate'),
-    timezone: formData.get('timezone'),
-  });
+  const parsed = createEventSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid event' };
   }
 
   const { endDate, name, startDate, timezone } = parsed.data;
 
-  if (new Date(endDate) < new Date(startDate)) {
-    return { errors: { endDate: ['End date must be after start date'] } };
-  }
-
   const slug = await uniqueSlug(name);
 
   await db.insert(events).values({
-    endDate: new Date(endDate),
+    endDate: parseDateInput(endDate),
     name,
     slug,
-    startDate: new Date(startDate),
+    startDate: parseDateInput(startDate),
     timezone,
     userId: session.userId,
   });
@@ -61,45 +43,37 @@ export async function createEvent(_prev: FormState, formData: FormData): Promise
   redirect(`/events/${slug}/edit`);
 }
 
-export async function updateEvent(
-  eventId: string,
-  _prev: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function updateEvent(eventId: string, input: UpdateEventValues): Promise<FormResult> {
   const session = await verifySession();
 
-  const parsed = updateEventSchema.safeParse({
-    description: formData.get('description') || undefined,
-    endDate: formData.get('endDate'),
-    name: formData.get('name'),
-    startDate: formData.get('startDate'),
-    timezone: formData.get('timezone'),
-  });
+  const parsed = updateEventSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid event' };
   }
 
   const { description, endDate, name, startDate, timezone } = parsed.data;
 
-  if (new Date(endDate) < new Date(startDate)) {
-    return { errors: { endDate: ['End date must be after start date'] } };
-  }
-
-  await db
+  const [updated] = await db
     .update(events)
     .set({
       description: description ?? null,
-      endDate: new Date(endDate),
+      endDate: parseDateInput(endDate),
       name,
-      startDate: new Date(startDate),
+      startDate: parseDateInput(startDate),
       timezone,
       updatedAt: new Date(),
     })
-    .where(and(eq(events.id, eventId), eq(events.userId, session.userId)));
+    .where(and(eq(events.id, eventId), eq(events.userId, session.userId)))
+    .returning({ slug: events.slug });
+
+  if (!updated) {
+    return { error: 'Event not found' };
+  }
 
   revalidatePath('/dashboard');
-  return { message: 'Event updated', success: true };
+  revalidatePath(`/events/${updated.slug}/edit`);
+  return { success: true };
 }
 
 export async function toggleEventStatus(eventId: string) {

@@ -1,42 +1,59 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useActionForm } from '@/hooks/use-action-form';
 import { login } from '@/lib/auth/actions';
+import { loginSchema } from '@/lib/auth/validation';
 
 export default function LoginPage() {
-  const [state, action, pending] = useActionState(login, null);
+  const { form, formError, pending, submit } = useActionForm({
+    action: login,
+    defaultValues: { email: '', password: '' },
+    schema: loginSchema,
+  });
+
+  const { errors } = form.formState;
 
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form noValidate onSubmit={submit} className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Welcome back</h1>
         <p className="text-muted-foreground text-sm">Sign in to your CueFlo account</p>
       </div>
-      {state?.message && <p className="text-destructive text-sm">{state.message}</p>}
-      <div className="grid gap-4">
-        <div className="grid gap-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-          {state?.errors?.email && (
-            <p className="text-destructive text-xs">{state.errors.email[0]}</p>
-          )}
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" required />
-          {state?.errors?.password && (
-            <p className="text-destructive text-xs">{state.errors.password[0]}</p>
-          )}
-        </div>
+
+      {formError && (
+        <p role="alert" className="text-destructive text-sm">
+          {formError}
+        </p>
+      )}
+
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            {...form.register('email')}
+          />
+          <FieldError errors={[errors.email]} />
+        </Field>
+
+        <Field>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <Input id="password" type="password" {...form.register('password')} />
+          <FieldError errors={[errors.password]} />
+        </Field>
+
         <Button type="submit" className="w-full" disabled={pending}>
           {pending ? 'Signing in...' : 'Sign in'}
         </Button>
-      </div>
+      </FieldGroup>
+
       <p className="text-muted-foreground text-center text-sm">
         Don&apos;t have an account?{' '}
         <Link

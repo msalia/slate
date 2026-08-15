@@ -1,9 +1,12 @@
 'use client';
 
+import { format } from 'date-fns';
 import { Plus } from 'lucide-react';
-import { useActionState, useState } from 'react';
+import { useState } from 'react';
+import { Controller } from 'react-hook-form';
 
 import { Button, buttonVariants } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import {
   Dialog,
   DialogContent,
@@ -13,16 +16,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useActionForm } from '@/hooks/use-action-form';
 import { createEvent } from '@/lib/event-actions';
+import { createEventSchema } from '@/lib/event-schema';
 import { cn } from '@/lib/utils';
 
 export function CreateEventDialog({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
-  const [state, action, pending] = useActionState(createEvent, null);
+  // Local date, not toISOString() — that is UTC and can read as the wrong day.
+  const today = format(new Date(), 'yyyy-MM-dd');
 
-  const today = new Date().toISOString().split('T')[0];
+  const { form, formError, pending, submit } = useActionForm({
+    action: createEvent,
+    defaultValues: {
+      endDate: today,
+      name: '',
+      startDate: today,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+    schema: createEventSchema,
+  });
+
+  const { errors } = form.formState;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -35,41 +52,57 @@ export function CreateEventDialog({ className }: { className?: string }) {
           <DialogTitle>Create event</DialogTitle>
           <DialogDescription>Set up the basics — you can edit everything later.</DialogDescription>
         </DialogHeader>
-        <form action={action} className="grid gap-4">
-          {state?.message && <p className="text-destructive text-sm">{state.message}</p>}
-          <div className="grid gap-1.5">
-            <Label htmlFor="name">Event name</Label>
-            <Input id="name" name="name" placeholder="My Conference 2026" required autoFocus />
-            {state?.errors?.name && (
-              <p className="text-destructive text-xs">{state.errors.name[0]}</p>
+        <form noValidate onSubmit={submit}>
+          <FieldGroup>
+            {formError && (
+              <p role="alert" className="text-destructive text-sm">
+                {formError}
+              </p>
             )}
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="grid gap-1.5">
-              <Label htmlFor="startDate">Start date</Label>
-              <Input id="startDate" name="startDate" type="date" defaultValue={today} required />
-              {state?.errors?.startDate && (
-                <p className="text-destructive text-xs">{state.errors.startDate[0]}</p>
-              )}
+
+            <Field>
+              <FieldLabel htmlFor="name">Event name</FieldLabel>
+              <Input
+                id="name"
+                placeholder="My Conference 2026"
+                autoFocus
+                {...form.register('name')}
+              />
+              <FieldError errors={[errors.name]} />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field>
+                <FieldLabel htmlFor="startDate">Start date</FieldLabel>
+                <Controller
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <DatePicker id="startDate" value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                <FieldError errors={[errors.startDate]} />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="endDate">End date</FieldLabel>
+                <Controller
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <DatePicker id="endDate" value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                <FieldError errors={[errors.endDate]} />
+              </Field>
             </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="endDate">End date</Label>
-              <Input id="endDate" name="endDate" type="date" defaultValue={today} required />
-              {state?.errors?.endDate && (
-                <p className="text-destructive text-xs">{state.errors.endDate[0]}</p>
-              )}
-            </div>
-          </div>
-          <input
-            type="hidden"
-            name="timezone"
-            value={Intl.DateTimeFormat().resolvedOptions().timeZone}
-          />
-          <DialogFooter>
-            <Button type="submit" className="w-full" disabled={pending}>
-              {pending ? 'Creating...' : 'Create event'}
-            </Button>
-          </DialogFooter>
+
+            <DialogFooter>
+              <Button type="submit" className="w-full" disabled={pending}>
+                {pending ? 'Creating...' : 'Create event'}
+              </Button>
+            </DialogFooter>
+          </FieldGroup>
         </form>
       </DialogContent>
     </Dialog>

@@ -10,21 +10,21 @@ import { verifySession } from '@/lib/auth/dal';
 import { createSession, deleteSession } from '@/lib/auth/session';
 import {
   changePasswordSchema,
-  type FormState,
+  type ChangePasswordValues,
+  type FormResult,
   loginSchema,
+  type LoginValues,
   signupSchema,
+  type SignupValues,
   updateProfileSchema,
+  type UpdateProfileValues,
 } from '@/lib/auth/validation';
 
-export async function signup(_prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = signupSchema.safeParse({
-    email: formData.get('email'),
-    name: formData.get('name'),
-    password: formData.get('password'),
-  });
+export async function signup(input: SignupValues): Promise<FormResult<'email'>> {
+  const parsed = signupSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid details' };
   }
 
   const { email, name, password } = parsed.data;
@@ -35,7 +35,7 @@ export async function signup(_prev: FormState, formData: FormData): Promise<Form
     .where(eq(users.email, email))
     .limit(1);
   if (existing.length > 0) {
-    return { errors: { email: ['An account with this email already exists'] } };
+    return { error: 'An account with this email already exists', field: 'email' };
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
@@ -47,21 +47,18 @@ export async function signup(_prev: FormState, formData: FormData): Promise<Form
 
   const user = result[0];
   if (!user) {
-    return { message: 'Failed to create account. Please try again.' };
+    return { error: 'Failed to create account. Please try again.' };
   }
 
   await createSession(user.id);
   redirect('/dashboard');
 }
 
-export async function login(_prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = loginSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-  });
+export async function login(input: LoginValues): Promise<FormResult> {
+  const parsed = loginSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid credentials' };
   }
 
   const { email, password } = parsed.data;
@@ -74,12 +71,12 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
 
   const user = result[0];
   if (!user || !user.passwordHash) {
-    return { message: 'Invalid email or password' };
+    return { error: 'Invalid email or password' };
   }
 
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
-    return { message: 'Invalid email or password' };
+    return { error: 'Invalid email or password' };
   }
 
   await createSession(user.id);
@@ -91,15 +88,13 @@ export async function logout() {
   redirect('/login');
 }
 
-export async function updateProfile(_prev: FormState, formData: FormData): Promise<FormState> {
+export async function updateProfile(input: UpdateProfileValues): Promise<FormResult> {
   const session = await verifySession();
 
-  const parsed = updateProfileSchema.safeParse({
-    name: formData.get('name'),
-  });
+  const parsed = updateProfileSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid name' };
   }
 
   await db
@@ -107,20 +102,18 @@ export async function updateProfile(_prev: FormState, formData: FormData): Promi
     .set({ name: parsed.data.name, updatedAt: new Date() })
     .where(eq(users.id, session.userId));
 
-  return { message: 'Profile updated', success: true };
+  return { success: true };
 }
 
-export async function changePassword(_prev: FormState, formData: FormData): Promise<FormState> {
+export async function changePassword(
+  input: ChangePasswordValues,
+): Promise<FormResult<'currentPassword'>> {
   const session = await verifySession();
 
-  const parsed = changePasswordSchema.safeParse({
-    confirmPassword: formData.get('confirmPassword'),
-    currentPassword: formData.get('currentPassword'),
-    newPassword: formData.get('newPassword'),
-  });
+  const parsed = changePasswordSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid password' };
   }
 
   const result = await db
@@ -131,12 +124,12 @@ export async function changePassword(_prev: FormState, formData: FormData): Prom
 
   const user = result[0];
   if (!user?.passwordHash) {
-    return { message: 'Cannot change password for OAuth accounts' };
+    return { error: 'Cannot change password for OAuth accounts' };
   }
 
   const valid = await bcrypt.compare(parsed.data.currentPassword, user.passwordHash);
   if (!valid) {
-    return { message: 'Current password is incorrect' };
+    return { error: 'Current password is incorrect', field: 'currentPassword' };
   }
 
   const newHash = await bcrypt.hash(parsed.data.newPassword, 10);
@@ -145,7 +138,7 @@ export async function changePassword(_prev: FormState, formData: FormData): Prom
     .set({ passwordHash: newHash, updatedAt: new Date() })
     .where(eq(users.id, session.userId));
 
-  return { message: 'Password changed', success: true };
+  return { success: true };
 }
 
 export async function deleteAccount() {

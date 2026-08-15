@@ -3,6 +3,7 @@
 import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
+import { PresenterFields } from '@/components/presenters/presenter-fields';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,8 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -23,8 +22,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Textarea } from '@/components/ui/textarea';
+import { useActionForm } from '@/hooks/use-action-form';
 import { deletePresenter, updatePresenter } from '@/lib/presenter-actions';
+import { presenterFormSchema } from '@/lib/presenter-schema';
 import { getInitials } from '@/lib/utils';
 
 interface Presenter {
@@ -41,25 +41,16 @@ function EditPresenterDialog({
   open,
   presenter,
 }: {
-  open: boolean;
   onOpenChange: (open: boolean) => void;
+  open: boolean;
   presenter: Presenter;
 }) {
-  const [name, setName] = useState(presenter.name);
-  const [role, setRole] = useState(presenter.role ?? '');
-  const [bio, setBio] = useState(presenter.bio ?? '');
-  const [pending, setPending] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) {
-      return;
-    }
-    setPending(true);
-    await updatePresenter(presenter.id, name, role || null, bio || null);
-    setPending(false);
-    onOpenChange(false);
-  }
+  const { form, formError, pending, submit } = useActionForm({
+    action: (values) => updatePresenter(presenter.id, values),
+    defaultValues: { bio: presenter.bio, name: presenter.name, role: presenter.role },
+    onSuccess: () => onOpenChange(false),
+    schema: presenterFormSchema,
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -68,38 +59,15 @@ function EditPresenterDialog({
           <DialogTitle>Edit presenter</DialogTitle>
           <DialogDescription>Update presenter details.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4">
-          <div className="grid gap-1.5">
-            <Label htmlFor="editName">Name</Label>
-            <Input
-              id="editName"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              autoFocus
-            />
-          </div>
-          <div className="grid gap-1.5">
-            <Label htmlFor="editRole">Role / title</Label>
-            <Input
-              id="editRole"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              placeholder="e.g. Engineering Lead"
-            />
-          </div>
-          <div className="grid gap-1.5">
-            <Label htmlFor="editBio">Bio</Label>
-            <Textarea
-              id="editBio"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Short bio (optional)"
-              rows={3}
-            />
-          </div>
+        <form noValidate onSubmit={submit} className="grid gap-4">
+          {formError && (
+            <p role="alert" className="text-destructive text-sm">
+              {formError}
+            </p>
+          )}
+          <PresenterFields form={form} idPrefix={`edit-presenter-${presenter.id}`} />
           <DialogFooter>
-            <Button type="submit" className="w-full" disabled={pending || !name.trim()}>
+            <Button type="submit" className="w-full" disabled={pending}>
               {pending ? 'Saving...' : 'Save changes'}
             </Button>
           </DialogFooter>

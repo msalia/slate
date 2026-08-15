@@ -39,7 +39,7 @@ export function PresenterManager({ presenters }: PresenterManagerProps) {
     if (!name.trim()) {
       return;
     }
-    await createPresenter(name.trim(), role.trim() || null);
+    await createPresenter({ bio: null, name: name.trim(), role: role.trim() || null });
     setName('');
     setRole('');
     setShowAdd(false);

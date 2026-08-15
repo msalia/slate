@@ -34,8 +34,20 @@ export const changePasswordSchema = z
     path: ['confirmPassword'],
   });
 
-export type FormState = {
-  errors?: Record<string, string[]>;
-  message?: string;
+export type SignupValues = z.infer<typeof signupSchema>;
+export type LoginValues = z.infer<typeof loginSchema>;
+export type UpdateProfileValues = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+
+/**
+ * What every server action returns. Forms validate with the same zod schema
+ * before submitting, so `error` carries what only the server can know — a
+ * duplicate email, a wrong current password. `field` lets the form attach the
+ * message to an input via react-hook-form's `setError` instead of stranding it
+ * at the top of the form.
+ */
+export type FormResult<TField extends string = string> = {
+  error?: string;
+  field?: TField;
   success?: boolean;
-} | null;
+};

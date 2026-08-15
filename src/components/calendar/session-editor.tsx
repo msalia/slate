@@ -2,16 +2,15 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { ChevronDownIcon, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { PresenterPicker } from '@/components/presenters/presenter-picker';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -25,7 +24,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { createSession, deleteSession, updateSession } from '@/lib/session-actions';
 import { sessionFormSchema, type SessionFormValues } from '@/lib/session-schema';
-import { addMinutes, parseDateInput, toTimeInputValue } from '@/lib/utils';
+import { addMinutes, toTimeInputValue } from '@/lib/utils';
 
 /** Base UI Select can't hold `null`, so "unassigned" travels as this sentinel. */
 const NONE = 'none';
@@ -95,7 +94,6 @@ export function SessionEditor({
   const isNew = session.id === null;
   const [pending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const form = useForm<SessionFormValues>({
     defaultValues: toDefaults(session),
@@ -133,10 +131,8 @@ export function SessionEditor({
     });
   }
 
-  const selectedDate = parseDateInput(form.watch('date'));
-
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form noValidate onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="title">Title</FieldLabel>
@@ -150,32 +146,7 @@ export function SessionEditor({
             control={form.control}
             name="date"
             render={({ field }) => (
-              <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    id="session-date"
-                    className="w-full justify-between font-normal"
-                  >
-                    {field.value ? format(selectedDate, 'PPP') : 'Select date'}
-                    <ChevronDownIcon className="text-muted-foreground h-4 w-4 shrink-0" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    captionLayout="dropdown"
-                    defaultMonth={selectedDate}
-                    onSelect={(day) => {
-                      if (day) {
-                        field.onChange(format(day, 'yyyy-MM-dd'));
-                      }
-                      setDatePickerOpen(false);
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker id="session-date" value={field.value} onChange={field.onChange} />
             )}
           />
           <FieldError errors={[errors.date]} />

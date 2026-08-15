@@ -6,37 +6,46 @@ import { revalidatePath } from 'next/cache';
 import { db } from '@/db';
 import { presenters, sessionPresenters } from '@/db/schema';
 import { verifySession } from '@/lib/auth/dal';
+import { type FormResult } from '@/lib/auth/validation';
+import { presenterFormSchema, type PresenterFormValues } from '@/lib/presenter-schema';
 
 export async function createPresenter(
-  name: string,
-  role: string | null,
-  bio: string | null = null,
-) {
+  input: PresenterFormValues,
+): Promise<FormResult & { presenterId?: string }> {
   const session = await verifySession();
+
+  const parsed = presenterFormSchema.safeParse(input);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid presenter' };
+  }
 
   const [presenter] = await db
     .insert(presenters)
-    .values({ bio, name, role, userId: session.userId })
-    .returning();
+    .values({ ...parsed.data, userId: session.userId })
+    .returning({ id: presenters.id });
 
   revalidatePath('/presenters');
-  return presenter;
+  return { presenterId: presenter.id, success: true };
 }
 
 export async function updatePresenter(
   presenterId: string,
-  name: string,
-  role: string | null,
-  bio: string | null = null,
-) {
+  input: PresenterFormValues,
+): Promise<FormResult> {
   const session = await verifySession();
+
+  const parsed = presenterFormSchema.safeParse(input);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid presenter' };
+  }
 
   await db
     .update(presenters)
-    .set({ bio, name, role })
+    .set(parsed.data)
     .where(and(eq(presenters.id, presenterId), eq(presenters.userId, session.userId)));
 
   revalidatePath('/presenters');
+  return { success: true };
 }
 
 export async function deletePresenter(presenterId: string) {

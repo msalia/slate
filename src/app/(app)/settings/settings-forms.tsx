@@ -1,7 +1,5 @@
 'use client';
 
-import { useActionState } from 'react';
-
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,16 +10,40 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useActionForm } from '@/hooks/use-action-form';
 import { changePassword, deleteAccount, updateProfile } from '@/lib/auth/actions';
+import { changePasswordSchema, updateProfileSchema } from '@/lib/auth/validation';
 import { getInitials } from '@/lib/utils';
 
-export function ProfileForm({ user }: { user: { name: string; email: string } | null }) {
-  const [state, action, pending] = useActionState(updateProfile, null);
+function StatusMessage({ error, success }: { error: string | null; success: boolean }) {
+  if (error) {
+    return (
+      <p role="alert" className="text-destructive text-sm">
+        {error}
+      </p>
+    );
+  }
+  if (success) {
+    return (
+      <p role="status" className="text-sm text-green-600">
+        Saved
+      </p>
+    );
+  }
+  return null;
+}
+
+export function ProfileForm({ user }: { user: { email: string; name: string } | null }) {
+  const { form, formError, pending, submit, succeeded } = useActionForm({
+    action: updateProfile,
+    defaultValues: { name: user?.name ?? '' },
+    schema: updateProfileSchema,
+  });
 
   return (
-    <form action={action}>
+    <form noValidate onSubmit={submit}>
       <Card>
         <CardHeader>
           <CardTitle>Profile</CardTitle>
@@ -39,18 +61,16 @@ export function ProfileForm({ user }: { user: { name: string; email: string } | 
               </div>
             </div>
           )}
-          {state?.message && (
-            <p className={`text-sm ${state.success ? 'text-green-600' : 'text-destructive'}`}>
-              {state.message}
-            </p>
-          )}
-          <div className="space-y-1.5">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" defaultValue={user?.name ?? ''} required />
-            {state?.errors?.name && (
-              <p className="text-destructive text-xs">{state.errors.name[0]}</p>
-            )}
-          </div>
+          <StatusMessage error={formError} success={succeeded} />
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="name">Name</FieldLabel>
+              {/* defaultValue as well as RHF's default: register only fills the
+                  input after hydration, which would otherwise flash empty. */}
+              <Input id="name" defaultValue={user?.name ?? ''} {...form.register('name')} />
+              <FieldError errors={[form.formState.errors.name]} />
+            </Field>
+          </FieldGroup>
         </CardContent>
         <CardFooter>
           <Button type="submit" disabled={pending}>
@@ -63,42 +83,58 @@ export function ProfileForm({ user }: { user: { name: string; email: string } | 
 }
 
 export function PasswordForm() {
-  const [state, action, pending] = useActionState(changePassword, null);
+  const { form, formError, pending, submit, succeeded } = useActionForm({
+    action: changePassword,
+    defaultValues: { confirmPassword: '', currentPassword: '', newPassword: '' },
+    resetOnSuccess: true,
+    schema: changePasswordSchema,
+  });
+
+  const { errors } = form.formState;
 
   return (
-    <form action={action}>
+    <form noValidate onSubmit={submit}>
       <Card>
         <CardHeader>
           <CardTitle>Change password</CardTitle>
           <CardDescription>Update your password</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {state?.message && (
-            <p className={`text-sm ${state.success ? 'text-green-600' : 'text-destructive'}`}>
-              {state.message}
-            </p>
-          )}
-          <div className="space-y-1.5">
-            <Label htmlFor="currentPassword">Current password</Label>
-            <Input id="currentPassword" name="currentPassword" type="password" required />
-            {state?.errors?.currentPassword && (
-              <p className="text-destructive text-xs">{state.errors.currentPassword[0]}</p>
-            )}
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="newPassword">New password</Label>
-            <Input id="newPassword" name="newPassword" type="password" required />
-            {state?.errors?.newPassword && (
-              <p className="text-destructive text-xs">{state.errors.newPassword[0]}</p>
-            )}
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="confirmPassword">Confirm new password</Label>
-            <Input id="confirmPassword" name="confirmPassword" type="password" required />
-            {state?.errors?.confirmPassword && (
-              <p className="text-destructive text-xs">{state.errors.confirmPassword[0]}</p>
-            )}
-          </div>
+          <StatusMessage error={formError} success={succeeded} />
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="currentPassword">Current password</FieldLabel>
+              <Input
+                id="currentPassword"
+                type="password"
+                autoComplete="current-password"
+                {...form.register('currentPassword')}
+              />
+              <FieldError errors={[errors.currentPassword]} />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="newPassword">New password</FieldLabel>
+              <Input
+                id="newPassword"
+                type="password"
+                autoComplete="new-password"
+                {...form.register('newPassword')}
+              />
+              <FieldError errors={[errors.newPassword]} />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="confirmPassword">Confirm new password</FieldLabel>
+              <Input
+                id="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                {...form.register('confirmPassword')}
+              />
+              <FieldError errors={[errors.confirmPassword]} />
+            </Field>
+          </FieldGroup>
         </CardContent>
         <CardFooter>
           <Button type="submit" disabled={pending}>
